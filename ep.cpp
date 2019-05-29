@@ -8,9 +8,9 @@ using namespace std;
 
 int main(){
     
-    int linhas, colunas, nPalavras, i=0, n=6;
+    int linhas, colunas, nPalavras, i=0, n=4;
     FILE * arquivo;
-    char info1[n], info2[n], info3[n];
+    char info[n][n];
     
 	//Abre o arquivo no modo "leitura" (read)
     arquivo = fopen("epdoc.txt", "r");
@@ -18,11 +18,26 @@ int main(){
     if(arquivo != NULL){
         //Coleta as informações do arquivo seguindo esse padrao
     	fscanf(arquivo, "%d %d %d\n", &linhas, &colunas, &nPalavras);//1a linha com inteiros
-    	fscanf(arquivo, "%s\n%s\n%s", info1, info2, info3);//2a, 3a e 4a linha com strings
-    	fclose(arquivo);	
+	}
+	for(int j = 0; j < n; j++){
+		for(int k = 0; k <n; k++){
+			char st;
+			if(k==n-1){
+				fscanf(arquivo, "%c\n", &st);
+			}else{
+				fscanf(arquivo, "%c", &st);	
+			}
+			info[j][k] = st;
+		}
 	}
     //Imprime o string de characters e o 3o numero do arquivo
-	cout << info1 << "\n" << info2 << "\n" << info3;
+    for(int j = 0; j < n; j++){
+		for(int k = 0; k <n; k++){
+    		cout << info[j][k];
+		}
+		cout << "\n";
+	}
+	
 	printf("\n%d", nPalavras);
     //Finaliza o programa
     return 0;

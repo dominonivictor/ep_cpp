@@ -1,4 +1,5 @@
-3 4 1
-abc
-CBABAA
-asdf
+4 4 1
+abcd
+efgh
+ijkl
+mnop
