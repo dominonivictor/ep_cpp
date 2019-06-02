@@ -1,8 +1,9 @@
-4 4 3
+4 4 4
 abcd
 efgh
 ijkl
 mnop
-palavrasssss
-legallll
-xxxDxDxD
+abc
+kgc
+mjg
+lgb
