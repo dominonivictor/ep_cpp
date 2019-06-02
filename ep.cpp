@@ -17,13 +17,6 @@
 #define CINZA 8
 #define BEGE 14
 
-/*
-OQE FALTA FAZER?
-- CHECAR SE MARCA() está certo
-- ELIMINAR AS PALAVRAS ACERTADAS DO VETOR palavras
-- TROCAR A COR DAS PALAVRAS 
-- 
-*/
 typedef struct posicoes_do_selecionado{
 	int x = 0;
 	int y = 0;
@@ -46,7 +39,7 @@ typedef struct variaveis_da_marca{
 marcaVars vars;
 
 //Inicializando variaveis globais
-int comando, linhas, colunas, nPalavras, resultado = -1, acertadas = 0;
+int comando, linhas, colunas, nPalavras, resultado = -1, acertadas = 0, t;
 char matriz[MAX_MAT][MAX_MAT], palavras[MAX_PAL][MAX_CHAR], selecionado[MAX_CHAR];
 bool terminou = false, leu = false, gameLoop = true;
 char escolha;
@@ -54,8 +47,10 @@ char escolha;
 using namespace std;
 
 void debuga(){
-	for (int i = 0; i < pos[0][0].tam; i++){
-		cout << "pos[0]["<<i<<"].x , pos[0]["<<i<<"].y= " << pos[0][i].x << ", " << pos[0][i].y; 
+	cout << "Insira o index da palavra acertada";
+	cin >> t;
+	for (int i = 0; i < pos[t][0].tam; i++){
+		cout << "pos[0]["<<i<<"].x , pos[0]["<<i<<"].y= " << pos[t][i].x << ", " << pos[t][i].y; 
  }
 }
 
@@ -80,8 +75,8 @@ int checa_palavras(){
 	for(int i = 0; i < nPalavras; i++){
 		if(eh_igual(palavras[i])){
 			for(int p = 0; p < vars.tam; p++){
-				pos[acertadas][p].x = pos[MAX_PAL][p].x;
-				pos[acertadas][p].y = pos[MAX_PAL][p].y;
+				pos[acertadas][p].x = pos[MAX_PAL-1][p].x;
+				pos[acertadas][p].y = pos[MAX_PAL-1][p].y;
 			}
 			pos[acertadas][0].tam = pos[MAX_PAL][0].tam;
 			acertadas++;
@@ -170,8 +165,7 @@ void junta_chars(){
 			}
 		}
 		pos[MAX_PAL-1][0].tam=vars.tam;
-		selecionado[vars.tam]='\0';
-		//strcat(selecionado, "\0");//finaliza o string
+		selecionado[vars.tam]='\0'; //finaliza o string
 	}
 }
 
@@ -180,6 +174,7 @@ void le_doc(){
 		cout << "Tem certeza que deseja carrega um novo arquivo (Isso irá apagar o progresso do caca palavras atual)?\nS/N:";
 		cin >> escolha;
 		if(char(tolower(escolha))=='s'){
+			leu = false;
 			le_doc();
 		}else if(char(tolower(escolha))=='n'){
 			return;
@@ -246,33 +241,45 @@ void imprime(){
 					} else if (k == colunas + 1) {//se for o elemento (0, coluna - 1) ou (linha - 1, coluna - 1)
 					    cout << " " << endl;
 					} else{
-					    cout << k - 1 << " ";
+						if(k>10){
+							cout << k - 11 << " ";
+						}else{
+							cout << k - 1 << " ";	
+						}
 					}
-					} else if(k == 0) {//se for a 1a coluna
-						cout << j - 1 << " ";
-					} else if(k == colunas + 1) {//se for a ultima coluna
-						cout << j - 1 << endl;
-					} else { //se nao for nenhuma das anteriores, então imprimiremos a matriz
-						if(acertadas>0){//se houverem palavras acertadas
-							for(int p = 0; p < acertadas; p++){//checa todas as palavras acertadas e suas posições, se x e y forem 
-								for(int q = 0; q < pos[p][0].tam ; q++){
-									if(j==pos[p][q].x && k==pos[p][q].y){//imprime apenas se 
-										troca_cor(VERDE);
-										cout << matriz[j-1][k-1] << " ";
-					   					troca_cor(AZUL);
-					   					goto prox;
-									}
+				} else if(k == 0) {//se for a 1a coluna
+					if(j>10){
+						cout << j - 11 << " ";
+					}else{
+						cout << j - 1 << " ";	
+					}
+				} else if(k == colunas + 1) {//se for a ultima coluna
+					if(j>10){
+						cout << j - 11 << endl;
+					}else{
+						cout << j - 1 << endl;	
+					}
+				} else { //se nao for nenhuma das anteriores, então imprimiremos a matriz
+					if(acertadas>0){//se houverem palavras acertadas
+						for(int p = 0; p < acertadas; p++){//checa todas as palavras acertadas e suas posições, se x e y forem 
+							for(int q = 0; q < pos[p][0].tam ; q++){
+								if((j-1==pos[p][q].x) && (k-1==pos[p][q].y)){//imprime apenas se 
+									troca_cor(VERDE);
+									cout << matriz[j-1][k-1] << " ";
+				   					troca_cor(AZUL);
+				   					goto prox;
 								}
-						   }
-						   goto continuar;
-					   }else{
-					   		continuar:;
-							troca_cor(BRANCO);
-							cout << matriz[j-1][k-1] << " ";
-							troca_cor(AZUL);
+							}
 					   }
-					   prox:;
-	               }       
+					   goto continuar;
+				   }else{
+				   		continuar:;
+						troca_cor(BRANCO);
+						cout << matriz[j-1][k-1] << " ";
+						troca_cor(AZUL);
+				   }
+				   prox:;
+               }       
 			}  
 			
 	    }
@@ -319,7 +326,7 @@ void marca(){
 			cout << "Boaa, uma a menos para a lista!\n";
 			elimina_palavra();
 			if(nPalavras == 0){
-				cout << "Parabens voce achou todas as palavras!";
+				cout << "Parabens voce achou todas as palavras!\n";
 			}
 			troca_cor(BRANCO);
 		}
@@ -345,7 +352,7 @@ int main(){
 			}
 			case 3:{//fecha
 				// Sai do jogo atual
-				if(leu==true){
+				if(leu){
 					cout << "Todo seu progresso será perdido, tem certeza que quer continuar?\nS/N:";
 					cin >> escolha;
 					if(char(tolower(escolha))=='s'){
